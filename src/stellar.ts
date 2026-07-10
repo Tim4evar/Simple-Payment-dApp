@@ -1,7 +1,7 @@
-import { freighter as freighterApi } from "@stellar/freighter-api";
+import * as FreighterAPI from "@stellar/freighter-api";
 import StellarSdk from "stellar-sdk";
 
-export const freighter = freighterApi;
+export const freighter = FreighterAPI.freighter || (FreighterAPI as any).default;
 
 export async function getBalance(publicKey: string) {
   try {
