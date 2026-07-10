@@ -12,15 +12,20 @@ function App() {
 
   const connectWallet = async () => {
     try {
-    setStatus({ type: 'info', message: 'Connecting to Freighter...' });
-    const result = await freighter.getAddress();
-    setAddress(result.address);
-    const bal = await getBalance(result.address);
-    setBalance(bal);
-    setStatus({ type: 'success', message: 'Wallet connected successfully!' });
-
+      setStatus({ type: 'info', message: 'Connecting to Freighter...' });
+      if (!freighter) {
+        throw new Error('Freighter wallet not found. Please install the extension.');
+      }
+      const result = await freighter.getAddress();
+      if (!result || !result.address) {
+        throw new Error('Failed to retrieve address from Freighter.');
+      }
+      setAddress(result.address);
+      const bal = await getBalance(result.address);
+      setBalance(bal);
+      setStatus({ type: 'success', message: 'Wallet connected successfully!' });
     } catch (error: any) {
-      console.error(error);
+      console.error('Connection Error:', error);
       setStatus({ type: 'error', message: error.message || 'Failed to connect wallet.' });
     }
   };
@@ -45,11 +50,10 @@ function App() {
       const result = await sendXlm(address, destination, amount);
       console.log('Transaction result:', result);
       setStatus({ type: 'success', message: `Payment successful! Hash: ${result.hash}` });
-      // Refresh balance
       const bal = await getBalance(address);
       setBalance(bal);
     } catch (error: any) {
-      console.error(error);
+      console.error('Payment Error:', error);
       setStatus({ type: 'error', message: error.message || 'Transaction failed.' });
     } finally {
       setLoading(false);
