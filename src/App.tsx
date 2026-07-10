@@ -19,7 +19,7 @@ function App() {
       const result = await freighter.getAddress();
       console.log('Freighter getAddress result:', result);
       if (!result || !result.address) {
-        throw new Error(`Failed to retrieve address from Freighter. Received: ${JSON.stringify(result)}`);
+        throw new Error('Freighter returned an empty address. Please make sure you have an active account selected in your Freighter extension and that it is set to Testnet.');
       }
       setAddress(result.address);
       const bal = await getBalance(result.address);
