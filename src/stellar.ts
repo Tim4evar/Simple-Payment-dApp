@@ -1,9 +1,6 @@
 import Freighter from "@stellar/freighter-api";
 import StellarSdk from "stellar-sdk";
 
-// Initialize Stellar SDK for Testnet
-StellarSdk.networks.setNetworkAddress("https://testnet.stellar.org");
-
 export const freighter = Freighter;
 
 export async function getBalance(publicKey: string) {
