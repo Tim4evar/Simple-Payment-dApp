@@ -17,8 +17,9 @@ function App() {
         throw new Error('Freighter wallet not found. Please install the extension.');
       }
       const result = await freighter.getAddress();
+      console.log('Freighter getAddress result:', result);
       if (!result || !result.address) {
-        throw new Error('Failed to retrieve address from Freighter.');
+        throw new Error(`Failed to retrieve address from Freighter. Received: ${JSON.stringify(result)}`);
       }
       setAddress(result.address);
       const bal = await getBalance(result.address);
