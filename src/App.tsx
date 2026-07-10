@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { freighter, getBalance, sendXlm } from './stellar';
+import { getFreighter, getBalance, sendXlm } from './stellar';
 import './App.css';
 
 function App() {
@@ -13,8 +13,9 @@ function App() {
   const connectWallet = async () => {
     try {
       setStatus({ type: 'info', message: 'Connecting to Freighter...' });
+      const freighter = getFreighter();
       if (!freighter) {
-        throw new Error('Freighter wallet not found. Please install the extension.');
+        throw new Error('Freighter wallet not found. Please ensure the extension is installed and enabled in your browser.');
       }
       const result = await freighter.getAddress();
       console.log('Freighter getAddress result:', result);
@@ -30,6 +31,7 @@ function App() {
       setStatus({ type: 'error', message: error.message || 'Failed to connect wallet.' });
     }
   };
+
 
   const disconnectWallet = () => {
     setAddress(null);

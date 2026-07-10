@@ -1,11 +1,14 @@
-import { freighter as freighterApi } from "@stellar/freighter-api";
 import StellarSdk from "stellar-sdk";
 
-// Log for debugging
-console.log("Freighter API import:", freighterApi);
-console.log("Window freighter:", (window as any)?.freighter);
-
-export const freighter = freighterApi;
+// The freighter object is injected by the browser extension into the window object.
+// We export a function to get it to ensure we are accessing the most current state.
+export const getFreighter = () => {
+  const f = (window as any)?.freighter;
+  if (!f) {
+    console.error("Freighter extension not found on window object");
+  }
+  return f;
+};
 
 export async function getBalance(publicKey: string) {
   try {
@@ -16,6 +19,42 @@ export async function getBalance(publicKey: string) {
     return xlmBalance ? xlmBalance.balance : "0";
   } catch (error) {
     console.error("Error fetching balance:", error);
+    throw error;
+  }
+}
+
+export async function sendXlm(publicKey: string, destination: string, amount: string) {
+  try {
+    const server = new StellarSdk.Server("https://testnet.stellar.org");
+    
+    // Load the source account to get the current sequence number
+    const sourceAccount = await server.loadAccount(publicKey);
+    
+    const transaction = new StellarSdk.TransactionBuilder(publicKey, {
+      fee: StellarSdk.minFee,
+      previousTime: sourceAccount.options.sequence,
+    })
+      .addOperation(
+        StellarSdk.Operation.payment({
+          destination,
+          asset: StellarSdk.assets.native(),
+          amount: amount,
+        })
+      )
+      .setTimeout(30)
+      .build();
+
+    // Use Freighter to sign the transaction
+    const freighter = getFreighter();
+    if (!freighter) throw new Error("Freighter not found");
+    
+    const signedTransaction = await freighter.signTransaction(transaction);
+    
+    // Submit the transaction to the network
+    const result = await server.submitTransaction(signedTransaction);
+    return result;
+  } catch (error) {
+    console.error("Error sending XLM:", error);
     throw error;
   }
 }
