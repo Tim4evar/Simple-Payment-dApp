@@ -18,8 +18,8 @@ function App() {
       }
       const result = await freighter.getAddress();
       console.log('Freighter getAddress result:', result);
-      if (!result || !result.address) {
-        throw new Error('Freighter returned an empty address. Please make sure you have an active account selected in your Freighter extension and that it is set to Testnet.');
+      if (!result || !result.address || result.address === "") {
+        throw new Error('Freighter returned an empty address. This usually means the wallet is locked, no account is selected, or the network is mismatched. Please open the Freighter extension, enter your password, and ensure a Testnet account is active.');
       }
       setAddress(result.address);
       const bal = await getBalance(result.address);
