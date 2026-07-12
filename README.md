@@ -39,7 +39,11 @@ A simple Stellar dApp built with React and TypeScript that allows users to conne
 
 ## Screenshots
 
-*(Note: Add your screenshots here)*
-- Wallet connected state
-- Balance displayed
-- Successful testnet transaction
+### 1. Connect Wallet
+![Connect Wallet](screenshots/01-connect-wallet.png)
+
+### 2. Balance Displayed
+![Balance Displayed](screenshots/02-balance-displayed.png)
+
+### 3. Successful Testnet Transaction
+![Successful Transaction](screenshots/03-successful-transaction.png)
